@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi CRUD Rumah Sakit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+        .sidebar .logo-container {
+            background-color: #0d6efd;
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom-right-radius: 1.5rem;
+        }
+        .sidebar .nav-links a {
+            color: #495057;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.2s;
+        }
+        .sidebar .nav-links a:hover,
+        .sidebar .nav-links a.active {
+            background-color: #e9ecef;
+        }
+        .main-header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 1rem;
+        }
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: rgba(0,0,0,.05);
+        }
+        .modal-content {
+            border-radius: 0.5rem;
+        }
+        .profile-container {
+            cursor: pointer;
+            position: relative;
+        }
+        .profile-dropdown {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 0;
+            margin-bottom: 0.5rem;
+            width: 100%;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 0.5rem;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="d-flex" style="height: 100vh;">
+
+        <!-- Sidebar -->
+        <aside class="sidebar d-flex flex-column">
+            <div class="logo-container">
+                <i class="fas fa-notes-medical fs-3 me-3"></i>
+                <h1 class="fs-4 fw-bold mb-0">MEDICAL</h1>
+            </div>
+            <nav class="flex-grow-1 px-3 py-4 overflow-auto">
+                <ul class="nav flex-column">
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link d-flex align-items-center" data-content="dashboard">
+                            <i class="fas fa-chart-line me-3"></i>
+                            <span class="fw-medium">Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link d-flex align-items-center active" data-content="rumah-sakit">
+                            <i class="fas fa-hospital-alt me-3"></i>
+                            <span class="fw-medium">Data Rumah Sakit</span>
+                        </a>
+                    </li>
+                    <li class="nav-item mb-2">
+                        <a href="#" class="nav-link d-flex align-items-center" data-content="pasien">
+                            <i class="fas fa-procedures me-3"></i>
+                            <span class="fw-medium">Data Pasien</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="p-3 border-top profile-container">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                        <i class="fas fa-user-circle fs-5 text-secondary"></i>
+                    </div>
+                    <div class="ms-3">
+                        <p class="fw-semibold mb-0 text-dark">John Doe</p>
+                        <p class="mb-0 text-muted" style="font-size: 0.875rem;">Programmer</p>
+                    </div>
+                </div>
+                <div id="profile-dropdown" class="profile-dropdown p-2">
+                    <button class="w-100 btn btn-danger d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#logout-modal">
+                        <i class="fas fa-sign-out-alt me-2"></i>
+                        <span>Logout</span>
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <div class="flex-grow-1 d-flex flex-column overflow-hidden">
+            <header class="main-header d-flex align-items-center justify-content-between">
+                <h1 id="page-title" class="fs-4 fw-bold text-dark mb-0">Data Rumah Sakit</h1>
+                <div class="d-flex align-items-center">
+                    <button id="btn-add" class="btn btn-primary me-2">
+                        <i class="fas fa-plus me-2"></i>Tambah Data
+                    </button>
+                    <button id="btn-download" class="btn btn-success">
+                        <i class="fas fa-file-excel me-2"></i>Download Excel
+                    </button>
+                </div>
+            </header>
+
+            <main class="flex-grow-1 overflow-auto p-4">
+                <div id="content-container" class="bg-white p-4 rounded shadow-sm">
+                    
+                    <!-- Halaman untuk Data RS -->
+                    <div id="rumah-sakit-content">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <h3 class="fs-5 fw-semibold mb-0">Tabel Data Rumah Sakit</h3>
+                            <div class="input-group" style="width: 250px;">
+                                <span class="input-group-text"><i class="fas fa-search text-secondary"></i></span>
+                                <input type="text" placeholder="Cari..." class="form-control">
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nama Rumah Sakit</th>
+                                        <th>Alamat</th>
+                                        <th>Email</th>
+                                        <th>Telepon</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rs-table-body">
+                                    <!-- Contoh data dummy (mmanual)-->
+                                    <tr data-id="1">
+                                        <td>1</td>
+                                        <td>Rumah Sakit Bunda</td>
+                                        <td>Jl. Bunga No. 10</td>
+                                        <td>rsbunda@email.com</td>
+                                        <td>021-1234567</td>
+                                        <td>
+                                            <a href="#" class="btn btn-sm btn-info text-white me-2">Edit</a>
+                                            <button class="btn btn-sm btn-danger delete-btn" data-table="rumah-sakit" data-id="1">Hapus</button>
+                                        </td>
+                                    </tr>
+                                    <!-- Baris data buat database -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </main>
+            
+            <!-- Footer -->
+            <footer class="bg-white text-center text-muted p-3 border-top">
+                &copy; 2024 MEDICAL. All rights reserved.
+            </footer>
+        </div>
+    </div>
+
+    <!-- Modal untuk confirm hapus -->
+    <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Apakah Anda yakin ingin menghapus data ini?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" id="confirm-delete">Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal untuk confirm logout -->
+    <div class="modal fade" id="logout-modal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Apakah Anda yakin ingin keluar dari akun ini?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-danger" id="confirm-logout">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        // ganti dengan data dari Larave nanti
+        const rumahSakitData = [
+            { id: 1, name: 'Rumah Sakit Bunda' },
+            { id: 2, name: 'Rumah Sakit Sehat Sejahtera' },
+            { id: 3, name: 'Klinik Medika' },
+        ];
+        
+        $(document).ready(function() {
+            // Fungsionalitas Halaman
+            // ===================================================================
+            // Menampilkan atau menyembunyikan dropdown profil pas diklik
+            $('.profile-container').on('click', function(e) {
+                e.stopPropagation(); 
+                $('#profile-dropdown').slideToggle('fast');
+            });
+            $(document).on('click', function() {
+                $('#profile-dropdown').slideUp('fast');
+            });
+            $('#profile-dropdown').on('click', function(e) {
+                e.stopPropagation();
+            });
+
+            //navigasi
+            $('.nav-link[data-content="rumah-sakit"]').addClass('active');
+
+            // Mengubah judul dan tombol sesuai konten
+            const pageTitle = $('#page-title');
+            const btnAdd = $('#btn-add');
+            pageTitle.text('Data Rumah Sakit');
+            btnAdd.html('<i class="fas fa-plus me-2"></i>Tambah Data Rumah Sakit');
+
+            // ===================================================================
+            // Fungsionalitas CRUD & AJAX (pake jQuery)
+            // ===================================================================
+
+            // 1. Tombol Hapus pake AJAX (percobaan)
+            let currentItemToDelete = null;
+            let currentTable = null;
+
+            $(document).on('click', '.delete-btn', function() {
+                currentItemToDelete = $(this).data('id');
+                currentTable = $(this).data('table');
+                $('#delete-modal').modal('show');
+            });
+
+            $('#confirm-delete').on('click', function() {
+                console.log(`Menghapus data dari tabel ${currentTable} dengan ID ${currentItemToDelete}...`);
+                $(`#rs-table-body tr[data-id='${currentItemToDelete}']`).remove();
+                $('#delete-modal').modal('hide');
+                console.log('Penghapusan berhasil (simulasi).');
+                currentItemToDelete = null;
+                currentTable = null;
+            });
+
+            // ===================================================================
+            // Fungsionalitas Logout
+            // ===================================================================
+            $('#confirm-logout').on('click', function() {
+                console.log("Pengguna berhasil logout (simulasi).");
+                $('#logout-modal').modal('hide');
+                alert("Anda telah berhasil logout.");
+                // window.location.href = '/login'; 
+            });
+        });
+    </script>
+</body>
+</html>
