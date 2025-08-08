@@ -1,12 +1,14 @@
 **Proyek Aplikasi Medical**
 Proyek ini dikembangkan sebagai bagian dari proses screening untuk program magang di Teracorp.
-Deskripsi Proyek
+
+**Deskripsi Proyek**
+
 Aplikasi Medical adalah sebuah sistem sederhana berbasis web yang dibangun dengan framework Laravel. Aplikasi ini berfungsi untuk mengelola data rumah sakit dan data pasien. Fungsionalitas utama yang diimplementasikan mencakup:
-Manajemen Data Rumah Sakit: Memungkinkan pengguna untuk melakukan operasi dasar CRUD (Create, Read, Update, Delete) pada data rumah sakit.
-Manajemen Data Pasien: Memungkinkan pengguna untuk melakukan operasi CRUD pada data pasien, dengan relasi yang terhubung ke data rumah sakit.
-Filter Data: Terdapat fitur filter pada data pasien untuk menampilkan data berdasarkan rumah sakit tertentu.
-Autentikasi: Sistem dilengkapi dengan fitur registrasi dan login untuk membatasi akses pengguna.
-Penggunaan AJAX: Sebagian besar interaksi CRUD diimplementasikan menggunakan AJAX, sehingga memungkinkan pengalaman pengguna yang lebih responsif tanpa memuat ulang halaman.
+- Manajemen Data Rumah Sakit: Memungkinkan pengguna untuk melakukan operasi dasar CRUD (Create, Read, Update, Delete) pada data rumah sakit.
+- Manajemen Data Pasien: Memungkinkan pengguna untuk melakukan operasi CRUD pada data pasien, dengan relasi yang terhubung ke data rumah sakit.
+- Filter Data: Terdapat fitur filter pada data pasien untuk menampilkan data berdasarkan rumah sakit tertentu.
+- Autentikasi: Sistem dilengkapi dengan fitur registrasi dan login untuk membatasi akses pengguna.
+- Penggunaan AJAX: Sebagian besar interaksi CRUD diimplementasikan menggunakan AJAX, sehingga memungkinkan pengalaman pengguna yang lebih responsif tanpa memuat ulang halaman.
 
 **Teknologi yang Digunakan**
 
